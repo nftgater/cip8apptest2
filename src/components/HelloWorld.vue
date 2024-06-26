@@ -31,11 +31,17 @@ export default defineComponent({
 
       
       wallet = await (window as any).cardano.nami.enable(); // was: typhoncip30
+      console.log(`Debug: wallet: ${wallet}`)
 
       const [stakeAddrHex, stakeAddrBech32] = await this.getStakeAddress();
+
       const messageUtf = `account: ${stakeAddrBech32}`;
+      console.log(`Debug: messageUtf: ${messageUtf}`)
+
       const messageHex = Buffer.from(messageUtf).toString("hex");
       const sigData = await wallet.signData(stakeAddrHex, messageHex);
+      console.log(`debug: sigData: ${sigData}`)
+
       const result = await this.submitToBackend(sigData);
       alert(result.message);
       
@@ -51,12 +57,16 @@ export default defineComponent({
     // As-is, this app runs fine. As soon as I add anything else the browser crashes, I suspect a WASM issue.
 
     async getStakeAddress() {
+      console.log("In getStakeAddress")
+
       const networkId = await wallet.getNetworkId();
       const changeAddrHex = await wallet.getChangeAddress();
 
       // derive the stake address from the change address to be sure we are getting
       // the stake address of the currently active account.
       const changeAddress = this.csl!.Address.from_bytes(Buffer.from(changeAddrHex, 'hex'));
+      console.log(`debug: changeAddress: ${changeAddress}`)
+
       let baseAddress = this.csl!.BaseAddress.from_address(changeAddress)
       if (!baseAddress) {
         throw new Error("Invalid base address");
@@ -67,12 +77,15 @@ export default defineComponent({
       }
       
       const stakeAddress = this.csl!.RewardAddress.new(networkId, stakeCredential).to_address();
+      console.log(`debug: stakeAddress: ${stakeAddress}`)
 
       return [stakeAddress.to_hex(), stakeAddress.to_bech32()];
     },
 
     // Not even worried about this part right now.
     async submitToBackend(sigData: any) {
+      console.log("In submitToBackend")
+
       const result = await fetch(`http://localhost:8081/login`, {
         method: "POST",
         headers: {
