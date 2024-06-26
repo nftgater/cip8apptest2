@@ -21,7 +21,7 @@ loadCsl();
 // The crash comes from the first usage of the cardano-serialization-library, in getStakeAddress(), after clicking the button to run authenticate().
 // >>> This one >>> ``` const changeAddress = csl.Address.from_bytes( Buffer.from(changeAddrHex, 'hex') ); ```
 
-// As-is, this app runs fine. As soon as I add the functions below 
+// As-is, this app runs fine. As soon as I add anything else the browser crashes, I suspect a WASM issue.
 
 
 window.addEventListener("load", () => {
