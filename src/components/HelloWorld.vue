@@ -1,7 +1,7 @@
 <template>
   <div class="greetings">
     <h1 class="green">CIP-008 Implementation</h1>
-    <p>My attempt to follow this <a href="https://developers.cardano.org/docs/integrate-cardano/user-wallet-authentication/" target="_blank">guide</a> on CIP8 message signing on a Vue3 app.</p>
+    <p>A Vue3 port of this <a href="https://developers.cardano.org/docs/integrate-cardano/user-wallet-authentication/" target="_blank">CIP-0008 implementation guide</a> on message signing for user authentication.</p>
     <button id="login-btn" @click="authenticate">Connect Nami</button>
   </div>
 </template>
@@ -42,8 +42,11 @@ export default defineComponent({
       const sigData = await wallet.signData(stakeAddrHex, messageHex);
       console.log(`debug: sigData: ${sigData}`)
 
+      alert(`Your stake address is ${stakeAddrBech32}. In a real-world application, the frontend would send your sigData to an API backend to verify a wallet.`)
+
       const result = await this.submitToBackend(sigData);
-      alert(result.message);
+      console.log("debug: result: ")
+      console.log(result)
       
 
       return;
@@ -79,6 +82,8 @@ export default defineComponent({
       const stakeAddress = this.csl!.RewardAddress.new(networkId, stakeCredential).to_address();
       console.log(`debug: stakeAddress: ${stakeAddress}`)
 
+
+
       return [stakeAddress.to_hex(), stakeAddress.to_bech32()];
     },
 
@@ -86,6 +91,7 @@ export default defineComponent({
     async submitToBackend(sigData: any) {
       console.log("In submitToBackend")
 
+      /*
       const result = await fetch(`http://localhost:8081/login`, {
         method: "POST",
         headers: {
@@ -94,6 +100,8 @@ export default defineComponent({
         body: JSON.stringify(sigData),
       });
       return result.json();
+      */
+     return;
     }
   },
   mounted() {
