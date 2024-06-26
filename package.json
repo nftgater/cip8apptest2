@@ -11,6 +11,7 @@
     "type-check": "vue-tsc --build --force"
   },
   "dependencies": {
+    "@emurgo/cardano-message-signing-browser": "^1.0.1",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",
     "webpack": "^5.92.1",
