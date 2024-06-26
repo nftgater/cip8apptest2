@@ -10,25 +10,16 @@ import { Buffer } from "buffer";
 let csl, wallet;
 
 async function loadCsl(){
-    csl = await import("@emurgo/cardano-serialization-lib-browser/cardano_serialization_lib");
+    csl = await import("@emurgo/cardano-serialization-lib-browser");
 };
 loadCsl();
+
+
 
 /*
 
 
-async function authenticate(){
-    if (!csl) await loadCsl(); // make sure CSL is loaded before doing anything else.
 
-    wallet = await window.cardano.nami.enable();
-
-    const [stakeAddrHex, stakeAddrBech32] = await getStakeAddress();
-    const messageUtf = `account: ${stakeAddrBech32}`;
-    const messageHex = Buffer.from(messageUtf).toString("hex");    
-    const sigData = await wallet.signData(stakeAddrHex, messageHex);
-    const result = await submitToBackend(sigData);
-    alert(result.message);
-}
 
 async function getStakeAddress(){
     const networkId = await wallet.getNetworkId();
