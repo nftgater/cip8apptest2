@@ -81,8 +81,6 @@ nav a:first-of-type {
   }
 
   nav {
-    text-align: left;
-    margin-left: -1rem;
     font-size: 1rem;
     width: 100%;
     margin-top: 0px;
