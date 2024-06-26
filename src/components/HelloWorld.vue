@@ -2,7 +2,7 @@
   <div class="greetings">
     <h1 class="green">CIP-008 Implementation</h1>
     <p>My attempt to follow this <a href="https://developers.cardano.org/docs/integrate-cardano/user-wallet-authentication/" target="_blank">guide</a> on CIP8 message signing on a Vue3 app.</p>
-    <button id="login-btn" @click.prevent="authenticate">Connect Nami</button>
+    <button id="login-btn" @click="authenticate">Connect Nami</button>
   </div>
 </template>
 
@@ -84,12 +84,14 @@ export default defineComponent({
     }
   },
   mounted() {
+    /* event listener is redundant with the '@click'
     window.addEventListener("load", () => {
       const loginBtn = document.querySelector("#login-btn");
       if (loginBtn) {
         loginBtn.addEventListener("click", this.authenticate);
       }
     });
+    */
   }
 });
 </script>
