@@ -92,6 +92,7 @@ button {
   color: white;
 	box-shadow: 0 3px 10px rgb(0 0 0 / 0.8);
 	line-height: 1em;
+  margin: 1em;
 	font-size: 1.5em;
 	font-family: monospace;
 	padding: 5px;
@@ -106,6 +107,13 @@ h1 {
 
 h3 {
   font-size: 1.2rem;
+}
+
+.greetings {
+  text-align: center;
+  padding: 2em;
+  border: 1px solid yellow;
+  border-radius: 10px;
 }
 
 .greetings h1,
