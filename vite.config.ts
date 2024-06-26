@@ -14,7 +14,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+      '@emurgo/cardano-serialization-lib-browser/cardano_serialization_lib_bg.wasm': 'vite-plugin-wasm',
     }
   }
 })
