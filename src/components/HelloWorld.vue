@@ -1,7 +1,8 @@
 <template>
   <div class="greetings">
-    <h1 class="green">{{ msg }}</h1>
-    <button id="login-btn">Do Shit</button>
+    <h1 class="green">CIP-008 Implementation</h1>
+    <p>My attempt to follow this <a href="https://developers.cardano.org/docs/integrate-cardano/user-wallet-authentication/" target="_blank">guide</a> on CIP8 message signing on a Vue3 app.</p>
+    <button id="login-btn">Connect Nami</button>
   </div>
 </template>
 
@@ -84,6 +85,18 @@ export default {
 </script>
 
 <style scoped>
+button {
+  border-radius: 15px;
+	border: 1px solid black;
+	background-color: darkgreen;
+  color: white;
+	box-shadow: 0 3px 10px rgb(0 0 0 / 0.8);
+	line-height: 1em;
+	font-size: 1.5em;
+	font-family: monospace;
+	padding: 5px;
+}
+
 h1 {
   font-weight: 500;
   font-size: 2.6rem;

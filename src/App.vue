@@ -6,7 +6,7 @@ import HelloWorld from './components/HelloWorld.vue'
 <template>
   <header>
     <div class="wrapper">
-      <HelloWorld msg="CIP-0008" />
+      <RouterView /><!-- <HelloWorld /> -->
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
@@ -15,7 +15,7 @@ import HelloWorld from './components/HelloWorld.vue'
     </div>
   </header>
 
-  <RouterView />
+ 
 </template>
 
 <style scoped>
