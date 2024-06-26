@@ -2,100 +2,110 @@
   <div class="greetings">
     <h1 class="green">CIP-008 Implementation</h1>
     <p>My attempt to follow this <a href="https://developers.cardano.org/docs/integrate-cardano/user-wallet-authentication/" target="_blank">guide</a> on CIP8 message signing on a Vue3 app.</p>
-    <button id="login-btn">Connect Nami</button>
+    <button id="login-btn" @click="authenticate">Connect Nami</button>
   </div>
 </template>
 
 <script lang="ts">
+import { defineComponent } from 'vue';
 import { Buffer } from "buffer";
-let csl, wallet;
+import * as CardanoSerializationLib from '@emurgo/cardano-serialization-lib-browser';
 
-async function loadCsl(){
-    csl = await import("@emurgo/cardano-serialization-lib-browser");
-};
-loadCsl();
+// Declare variables
+let wallet: any;
 
-/*
-// NOTES: 
-// The commented-out functions come from this CIP-0008 guide: https://developers.cardano.org/docs/integrate-cardano/user-wallet-authentication/
+export default defineComponent({
+  data() {
+    return {
+      csl: null as typeof CardanoSerializationLib | null,
+    };
+  },
+  methods: {
+    async loadCsl() {
+      this.csl = await import("@emurgo/cardano-serialization-lib-browser");
+    },
+    async authenticate() {
+      console.log("in authenticate()");
 
-// The crash comes from the first usage of the cardano-serialization-library, in getStakeAddress(), after clicking the button to run authenticate().
-// >>> This one >>> ``` const changeAddress = csl.Address.from_bytes( Buffer.from(changeAddrHex, 'hex') ); ```
+      if (!this.csl) await this.loadCsl();
 
-// As-is, this app runs fine. As soon as I add anything else the browser crashes, I suspect a WASM issue.
+      /*
+      wallet = await (window as any).cardano.nami.enable(); // was: typhoncip30
 
+      const [stakeAddrHex, stakeAddrBech32] = await this.getStakeAddress();
+      const messageUtf = `account: ${stakeAddrBech32}`;
+      const messageHex = Buffer.from(messageUtf).toString("hex");
+      const sigData = await wallet.signData(stakeAddrHex, messageHex);
+      const result = await this.submitToBackend(sigData);
+      alert(result.message);
+      */
 
-window.addEventListener("load", () => {
-    const loginBtn = document.querySelector("#login-btn");
-    loginBtn.addEventListener("click", authenticate);
-})
+      return;
+    },
 
-async function authenticate(){
-    if (!csl) await loadCsl(); // make sure CSL is loaded before doing anything else.
+    // NOTES: 
+    // The commented-out functions come from this CIP-0008 guide: https://developers.cardano.org/docs/integrate-cardano/user-wallet-authentication/
+    // The crash comes from the first usage of the cardano-serialization-library, in getStakeAddress(), after clicking the button to run authenticate().
+    // >>> This one >>> ``` const changeAddress = csl.Address.from_bytes( Buffer.from(changeAddrHex, 'hex') ); ```
 
-    wallet = await window.cardano.nami.enable(); // was: typhoncip30
+    // As-is, this app runs fine. As soon as I add anything else the browser crashes, I suspect a WASM issue.
 
-    const [stakeAddrHex, stakeAddrBech32] = await getStakeAddress();
-    const messageUtf = `account: ${stakeAddrBech32}`;
-    const messageHex = Buffer.from(messageUtf).toString("hex");    
-    const sigData = await wallet.signData(stakeAddrHex, messageHex);
-    const result = await submitToBackend(sigData);
-    alert(result.message);
-}
+    async getStakeAddress() {
+      const networkId = await wallet.getNetworkId();
+      const changeAddrHex = await wallet.getChangeAddress();
 
+      // derive the stake address from the change address to be sure we are getting
+      // the stake address of the currently active account.
+      const changeAddress = this.csl!.Address.from_bytes(Buffer.from(changeAddrHex, 'hex'));
+      let baseAddress = this.csl!.BaseAddress.from_address(changeAddress)
+      if (!baseAddress) {
+        throw new Error("Invalid base address");
+      }
+      const stakeCredential = baseAddress.stake_cred();
+      if (!stakeCredential) {
+        throw new Error("Invalid stake credential");
+      }
+      
+      const stakeAddress = this.csl!.RewardAddress.new(networkId, stakeCredential).to_address();
 
-async function getStakeAddress(){
-    const networkId = await wallet.getNetworkId();
-    const changeAddrHex = await wallet.getChangeAddress();
-    
-    // derive the stake address from the change address to be sure we are getting
-    // the stake address of the currently active account.
-    const changeAddress = csl.Address.from_bytes( Buffer.from(changeAddrHex, 'hex') );
-    const stakeCredential = csl.BaseAddress.from_address(changeAddress).stake_cred();
-    const stakeAddress = csl.RewardAddress.new(networkId, stakeCredential).to_address();
+      return [stakeAddress.to_hex(), stakeAddress.to_bech32()];
+    },
 
-    return [stakeAddress.to_hex(), stakeAddress.to_bech32()];
-}
-
-// Not even worried about this part right now.
-async function submitToBackend(sigData){
-    const result = await fetch(`http://localhost:8081/login`, {
+    // Not even worried about this part right now.
+    async submitToBackend(sigData: any) {
+      const result = await fetch(`http://localhost:8081/login`, {
         method: "POST",
         headers: {
-            "Content-Type": "application/json",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(sigData),
-    });
-    return result.json();
-}
-*/
-export default {
-	data() {
-		return {
-      csl: null,
+      });
+      return result.json();
     }
   },
-  methods: {},
   mounted() {
-
+    window.addEventListener("load", () => {
+      const loginBtn = document.querySelector("#login-btn");
+      if (loginBtn) {
+        loginBtn.addEventListener("click", this.authenticate);
+      }
+    });
   }
-}
-
-
+});
 </script>
 
 <style scoped>
 button {
   border-radius: 15px;
-	border: 1px solid black;
-	background-color: darkgreen;
+  border: 1px solid black;
+  background-color: darkgreen;
   color: white;
-	box-shadow: 0 3px 10px rgb(0 0 0 / 0.8);
-	line-height: 1em;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.8);
+  line-height: 1em;
   margin: 1em;
-	font-size: 1.5em;
-	font-family: monospace;
-	padding: 5px;
+  font-size: 1.5em;
+  font-family: monospace;
+  padding: 5px;
 }
 
 h1 {
