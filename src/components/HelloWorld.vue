@@ -101,7 +101,7 @@ export default defineComponent({
       });
       return result.json();
       */
-     return;
+     return "test complete"
     }
   },
   mounted() {
