@@ -128,7 +128,7 @@ button {
   margin: 1em;
   font-size: 1.5em;
   font-family: monospace;
-  padding: 5px;
+  padding: 5px 10px;
 }
 
 h1 {
@@ -154,10 +154,5 @@ h3 {
   text-align: center;
 }
 
-@media (min-width: 1024px) {
-  .greetings h1,
-  .greetings h3 {
-    text-align: left;
-  }
-}
+
 </style>
